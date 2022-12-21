@@ -1,6 +1,7 @@
 package com.ms.demo.kafka.to.elastic.consumer.impl;
 
 import com.ms.demo.config.KafkaConfigData;
+import com.ms.demo.config.KafkaConsumerConfigData;
 import com.ms.demo.elastic.index.client.service.ElasticIndexClient;
 import com.ms.demo.elastic.model.impl.TwitterIndexModel;
 import com.ms.demo.kafka.admin.client.KafkaAdminClient;
@@ -13,6 +14,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.config.KafkaListenerEndpointRegistrar;
+import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -25,18 +27,21 @@ import java.util.List;
 @Slf4j
 @AllArgsConstructor
 public class TwitterKafkaConsumer implements KafkaConsumer<Long, TwitterAvroModel> {
-    private KafkaListenerEndpointRegistrar kafkaListenerEndpointRegistrar;
+    private KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry;
     private KafkaAdminClient kafkaAdminClient;
     private KafkaConfigData kafkaConfigData;
+
+    private KafkaConsumerConfigData kafkaConsumerConfigData;
     private ElasticIndexClient elasticIndexClient;
 
     private AvroToElasticMapper avroToElasticMapper;
+
 
     @EventListener
     public void onStartUp(ApplicationReadyEvent applicationReadyEvent){
         kafkaAdminClient.checkTopicCreated();
         log.info("Topics with name {} are ready for operations", kafkaConfigData.getTopicName());
-        kafkaListenerEndpointRegistrar.getEndpointRegistry().getListenerContainer("twitter-topic-listener").start();
+        kafkaListenerEndpointRegistry.getListenerContainer(kafkaConsumerConfigData.getConsumerGroupId()).start();
     }
 
     @Override
