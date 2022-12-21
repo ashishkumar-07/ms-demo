@@ -1,0 +1,42 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: kafka-to-elastic-service
+kafka-consumer-config:
+  keyDeserializer: org.apache.kafka.common.serialization.LongDeserializer
+  valueDeserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+  consumerGroupId: twitter-topic-consumer
+  autoOffsetReset: earliest
+  specificAvroReaderKey: specific.avro.reader
+  specificAvroReader: true
+  batchListener: true
+  autoStartup: false
+  concurrencyModel: 3
+  sessionTimeoutMs: 10000
+  heartbeatIntervalMs: 3000
+  maxPollIntervalMs: 300000
+  maxPollRecords: 500
+  maxPartitionFetchBytesDefault: 1048576
+  maxPartitionFetchBytesBoostFactor: 1
+  pollTimeoutMs: 100
+retry-config:
+  initialIntervalMs: 1000
+  maxIntervalMs: 10000
+  multiplier: 2.0
+  maxAttempts: 3
+  sleepTimeMs: 2000
+kafka-config:
+  bootStrapServers: localhost:19092, localhost:29092, localhost:39092
+  schemaRegistryUrlKey: schema.registry.url
+  schemaRegistryUrl: http://localhost:8081
+  topicName: twitter-topic
+  topicNamesToCreate:
+    - twitter-topic
+elastic-config:
+  index-name: twitter-index
+  connection-url: http://localhost:9200
+  connect-timeout-ms: 5000
+  socket-timeout-ms: 30000
+  is-repository: true
+

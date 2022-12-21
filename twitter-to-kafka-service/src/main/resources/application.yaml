@@ -1,0 +1,40 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: twitter-to-kafka-service
+
+twitter-to-kafka:
+  twitter-keywords:
+    - Java
+    - Microservice
+    - Kubernetes
+    - Kafka
+    - Elasticsearch
+retry-config:
+  initialIntervalMs: 1000
+  maxIntervalMs: 10000
+  multiplier: 2.0
+  maxAttempts: 3
+  sleepTimeMs: 2000
+kafka-config:
+  bootStrapServers: localhost:19092, localhost:29092, localhost:39092
+  schemaRegistryUrlKey: schema.registry.url
+  schemaRegistryUrl: http://localhost:8081
+  topicName: twitter-topic
+  topicNamesToCreate:
+    - twitter-topic
+  numOfPartitions: 3
+  replicationFactor: 3
+kafka-producer-config:
+  keySerializerClass: org.apache.kafka.common.serialization.LongSerializer
+  valueSerializerClass: io.confluent.kafka.serializers.KafkaAvroSerializer
+  compressionType: snappy
+  acks: all
+  bachSize: 16348
+  bachSizeBoostFactor: 100
+  lingerMs: 0
+  requestTimeoutMs: 60000
+  retryCount: 5
+logging:
+  level.org.apache.kafka: debug

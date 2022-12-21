@@ -1,0 +1,28 @@
+version: '3.7'
+services:
+  elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-latest}
+    hostname: elastic-1
+    container_name: "elastic"
+    environment:
+      - node.name=elastic-1
+      - cluster.name=es-twitter-cluster
+      #- discovery.seed_hosts=elastic-1
+      - cluster.initial_master_nodes=elastic-1
+      - bootstrap.memory_lock=true
+      - node.store.allow_mmap=false
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elastic-data-8:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - ${GLOBAL_NETWORK:-elastic}
+volumes:
+  elastic-data-8:
+    driver: local
