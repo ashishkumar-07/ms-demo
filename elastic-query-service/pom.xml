@@ -52,7 +52,7 @@
                 <configuration>
 
                     <image>
-                        <name>${project.groupId}/twitter.to.kafka.service:${project.version}</name>
+                        <name>${project.groupId}/elastic.query.service:${project.version}</name>
                         <env>
                             <BP_JVM_VERSION>17</BP_JVM_VERSION>
                         </env>
