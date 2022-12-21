@@ -7,6 +7,7 @@ import com.ms.demo.kafka.admin.client.KafkaAdminClient;
 import com.ms.demo.kafka.avro.model.TwitterAvroModel;
 import com.ms.demo.kafka.to.elastic.consumer.KafkaConsumer;
 import com.ms.demo.kafka.to.elastic.consumer.mapper.AvroToElasticMapper;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -22,6 +23,7 @@ import java.util.List;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class TwitterKafkaConsumer implements KafkaConsumer<Long, TwitterAvroModel> {
     private KafkaListenerEndpointRegistrar kafkaListenerEndpointRegistrar;
     private KafkaAdminClient kafkaAdminClient;
@@ -38,7 +40,7 @@ public class TwitterKafkaConsumer implements KafkaConsumer<Long, TwitterAvroMode
     }
 
     @Override
-    @KafkaListener(id = "twitter-topic-listener", topics="${kafka-config.topicName}", groupId ="${kafka-consumer-config.consumerGroupId")
+    @KafkaListener(id = "${kafka-consumer-config.consumerGroupId}", topics="${kafka-config.topicName}", groupId ="${kafka-consumer-config.consumerGroupId}")
     public void receive(@Payload List<TwitterAvroModel> messages,
                         @Header(KafkaHeaders.RECEIVED_KEY) List<Long> keys,
                         @Header(KafkaHeaders.RECEIVED_PARTITION) List<Integer> partitions,
